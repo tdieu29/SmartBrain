@@ -84,7 +84,21 @@ class App extends React.Component {
     }));
   
     app.models.predict(Clarifai.FACE_DETECT_MODEL, this.state.input)
-   .then(response => this.displayFaceBox(this.calculateFaceLocation(response)))
+    .then(response => {
+      if (response) {
+        fetch('http://localhost:3000/image', {
+          method: 'put',
+          headers: {'Content-Type': 'application/json'},
+          body: JSON.stringify({
+            userId: this.state.user.id 
+          })
+        })
+        .then(response => response.json())
+        .then(entryCount => {Object.assign(this.state.user, {entries: entryCount})})
+      }
+
+      this.displayFaceBox(this.calculateFaceLocation(response))
+    })
    .catch(err => console.log(err));
   }    
 
@@ -99,7 +113,7 @@ class App extends React.Component {
   }
 
   render() {
-    const { isSignedIn, imageUrl, route, box } = this.state;
+    const { isSignedIn, imageUrl, route, box, user } = this.state;
     return (
       <div className="App">
         <Particles className="particles" params={particlesParams} />
@@ -107,7 +121,7 @@ class App extends React.Component {
         { route === 'home' 
           ? <div> 
               <Logo />
-              <Rank />
+              <Rank name={user.name} entries={user.entries} />
               <ImageLinkForm onInputChange={this.onInputChange} onButtonSubmit={this.onButtonSubmit} />
               <FaceRecognition imageUrl={imageUrl} box={box}/>
             </div>

@@ -80,7 +80,7 @@ class App extends React.Component {
       imageUrl: state.input
     }));
   
-    fetch('http://localhost:3000/imageUrl', {
+    fetch('https://nameless-dawn-81728.herokuapp.com/imageUrl', {
       method: 'post',
       headers: {'Content-Type': 'application/json'},
       body: JSON.stringify({
@@ -90,7 +90,7 @@ class App extends React.Component {
     .then(response => response.json())
     .then(response => {
       if (response) {
-        fetch('http://localhost:3000/image', {
+        fetch('https://nameless-dawn-81728.herokuapp.com/image', {
           method: 'put',
           headers: {'Content-Type': 'application/json'},
           body: JSON.stringify({
